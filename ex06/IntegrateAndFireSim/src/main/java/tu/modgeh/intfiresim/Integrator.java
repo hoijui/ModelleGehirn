@@ -84,13 +84,17 @@ public class Integrator {
 		}
 	}
 
-	private void update() {
+	private double calcNoise() {
 
-		potential = potential
-				+ (deltaT / (membraneResistance * membraneResistance))
+		return (deltaT / (membraneResistance * membraneResistance))
 					* (potential - restingPotential)
 				+ deltaT * current / membraneCapacitance
 				+ randStandardDeviation * Math.sqrt(deltaT) * rand.nextGaussian();
+	}
+
+	private void update() {
+
+		potential += calcNoise();
 
 		if (potential > threasholdPotential) {
 			fireSpike();
