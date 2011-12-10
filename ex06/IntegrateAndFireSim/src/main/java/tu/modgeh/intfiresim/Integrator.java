@@ -36,6 +36,9 @@ public class Integrator {
 	/** V [V] */
 	private double potential = 0.0;
 
+	/** t [s] */
+	private double time = 0.0;
+
 	/** V [V] */
 	private Random rand = new Random();
 
@@ -46,7 +49,7 @@ public class Integrator {
 	/** @param tillTime in seconds */
 	public void runSimulation(double tillTime) {
 
-		double time = 0.0;
+		time = 0.0;
 		while (time < tillTime) {
 			update();
 			time += deltaT;
@@ -167,6 +170,10 @@ public class Integrator {
 
 	public void setPotential(double potential) {
 		this.potential = potential;
+	}
+
+	public double getTime() {
+		return time;
 	}
 
 	public Random getRand() {
