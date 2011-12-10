@@ -21,5 +21,8 @@ public class App {
 		}
 
 		new Tester(i);
+
+		// 6. a)
+		new ExcerciseVisualizer().run();
 	}
 }
