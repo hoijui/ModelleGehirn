@@ -187,4 +187,25 @@ public class Integrator {
 	public void setRand(Random rand) {
 		this.rand = rand;
 	}
+
+	@Override
+	public String toString() {
+
+		StringBuilder str = new StringBuilder();
+
+		str.append("Integrate-and-fire {");
+		str.append("r_m: ").append(getMembraneResistance()).append("Ohm ");
+		str.append("c_m: ").append(getMembraneCapacitance()).append("F ");
+		str.append("V_reset: ").append(getResetPotential()).append("V ");
+		str.append("E_r: ").append(getRestingPotential()).append("V ");
+		str.append("V_th: ").append(getThreasholdPotential()).append("V ");
+		str.append("sigma: ").append(getRandStandardDeviation()).append(" ");
+		str.append("i: ").append(getCurrent()).append("A ");
+		str.append("deltaT: ").append(getDeltaT()).append("s ");
+//		str.append("V: ").append(getPotential()).append("V ");
+//		str.append("t: ").append(getTime()).append("s ");
+		str.append("}");
+
+		return str.toString();
+	}
 }
