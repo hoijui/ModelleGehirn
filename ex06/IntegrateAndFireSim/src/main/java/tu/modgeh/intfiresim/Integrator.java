@@ -46,11 +46,13 @@ public class Integrator {
 	public Integrator() {
 	}
 
-	/** @param tillTime in seconds */
-	public void runSimulation(double tillTime) {
+	/** @param simulation duration in seconds */
+	public void runSimulation(double duration) {
 
+		potential = getRestingPotential();
 		time = 0.0;
-		while (time < tillTime) {
+
+		while (time < duration) {
 			update();
 			time += deltaT;
 		}
