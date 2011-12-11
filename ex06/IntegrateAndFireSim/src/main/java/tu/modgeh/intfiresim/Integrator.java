@@ -84,17 +84,27 @@ public class Integrator {
 		}
 	}
 
-	private double calcNoise() {
+	private double calcLeak() {
 
 		return (deltaT / (membraneResistance * membraneResistance))
-					* (potential - restingPotential)
-				+ deltaT * current / membraneCapacitance
-				+ randStandardDeviation * Math.sqrt(deltaT) * rand.nextGaussian();
+					* (potential - restingPotential);
+	}
+
+	private double calcStored() {
+		return deltaT * (current / membraneCapacitance);
+	}
+
+	private double calcNoise() {
+		return Math.sqrt(deltaT) * (randStandardDeviation * rand.nextGaussian());
+	}
+
+	private double calcMembranePotentialChange() {
+		return calcLeak() + calcStored() + calcNoise();
 	}
 
 	private void update() {
 
-		potential += calcNoise();
+		potential += calcMembranePotentialChange();
 
 		if (potential > threasholdPotential) {
 			fireSpike();
