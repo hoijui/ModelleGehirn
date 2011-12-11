@@ -24,8 +24,8 @@ public class Integrator {
 	/** V_th [V] */
 	private double threasholdPotential = -54E-3;
 
-	/** sigma  [s] */
-	private double randStandardDeviation = 0.5E-3;
+	/** sigma */
+	private double noiseStandardDeviation = 0.5;
 
 	/** i [A] */
 	private double current = 0.5E-9;
@@ -97,7 +97,7 @@ public class Integrator {
 	}
 
 	private double calcNoise() {
-		return Math.sqrt(deltaT) * (randStandardDeviation * rand.nextGaussian());
+		return Math.sqrt(deltaT) * (noiseStandardDeviation * rand.nextGaussian());
 	}
 
 	private double calcMembranePotentialChange() {
@@ -156,12 +156,12 @@ public class Integrator {
 		this.threasholdPotential = threasholdPotential;
 	}
 
-	public double getRandStandardDeviation() {
-		return randStandardDeviation;
+	public double getNoiseStandardDeviation() {
+		return noiseStandardDeviation;
 	}
 
-	public void setRandStandardDeviation(double randStandardDeviation) {
-		this.randStandardDeviation = randStandardDeviation;
+	public void setNoiseStandardDeviation(double randStandardDeviation) {
+		this.noiseStandardDeviation = randStandardDeviation;
 	}
 
 	public double getCurrent() {
@@ -211,7 +211,7 @@ public class Integrator {
 		str.append("V_reset: ").append(getResetPotential()).append("V ");
 		str.append("E_r: ").append(getRestingPotential()).append("V ");
 		str.append("V_th: ").append(getThreasholdPotential()).append("V ");
-		str.append("sigma: ").append(getRandStandardDeviation()).append(" ");
+		str.append("sigma: ").append(getNoiseStandardDeviation()).append(" ");
 		str.append("i: ").append(getCurrent()).append("A ");
 		str.append("deltaT: ").append(getDeltaT()).append("s ");
 //		str.append("V: ").append(getPotential()).append("V ");
