@@ -9,37 +9,37 @@ public class Integrator {
 	private List<SpikeListener> spikeListeners = new ArrayList<SpikeListener>();
 	private List<UpdateListener> updateListeners = new ArrayList<UpdateListener>();
 
-	/** r_m [Ohm] */
-	private double membraneResistance = 20E6;
+	/** r_m [MOhm] */
+	private double membraneResistance = 20.0;
 
-	/** c_m [F] */
-	private double membraneCapacitance = 0.5E-9;
+	/** c_m [nF] */
+	private double membraneCapacitance = 0.5;
 
-	/** V_reset [V] */
-	private double resetPotential = -63E-3;
+	/** V_reset [mV] */
+	private double resetPotential = -63.0;
 
-	/** E_r [V] */
-	private double restingPotential = -70E-3;
+	/** E_r [mV] */
+	private double restingPotential = -70.0;
 
-	/** V_th [V] */
-	private double threasholdPotential = -54E-3;
+	/** V_th [mV] */
+	private double threasholdPotential = -54.0;
 
 	/** sigma */
 	private double noiseStandardDeviation = 0.5;
 
-	/** i [A] */
-	private double current = 0.5E-9;
+	/** i [nA] */
+	private double current = 0.5;
 
 	/** delta-t [s] */
 	private double deltaT = 0.2E-3;
 
-	/** V [V] */
+	/** V [mV] */
 	private double potential = 0.0;
 
 	/** t [s] */
 	private double time = 0.0;
 
-	/** V [V] */
+	/** random generator for the noise */
 	private Random rand = new Random();
 
 
@@ -49,7 +49,7 @@ public class Integrator {
 	/** @param simulation duration in seconds */
 	public void runSimulation(double duration) {
 
-		potential = getRestingPotential();
+		potential = restingPotential;
 		time = 0.0;
 
 		while (time < duration) {
@@ -88,16 +88,16 @@ public class Integrator {
 
 	private double calcLeak() {
 
-		return - (deltaT / (membraneResistance * membraneCapacitance))
+		return - (deltaT / (membraneResistance * membraneCapacitance / 1E3))
 					* (potential - restingPotential);
 	}
 
 	private double calcStored() {
-		return deltaT * (current / membraneCapacitance);
+		return deltaT * (current / membraneCapacitance) * 1E3;
 	}
 
 	private double calcNoise() {
-		return Math.sqrt(deltaT) * (noiseStandardDeviation * rand.nextGaussian());
+		return Math.sqrt(deltaT) * (noiseStandardDeviation * rand.nextGaussian()) * 1E3;
 	}
 
 	private double calcMembranePotentialChange() {
@@ -117,43 +117,43 @@ public class Integrator {
 	}
 
 	public double getMembraneResistance() {
-		return membraneResistance;
+		return membraneResistance * 1E6;
 	}
 
 	public void setMembraneResistance(double membraneResistance) {
-		this.membraneResistance = membraneResistance;
+		this.membraneResistance = membraneResistance / 1E6;
 	}
 
 	public double getMembraneCapacitance() {
-		return membraneCapacitance;
+		return membraneCapacitance / 1E9;
 	}
 
 	public void setMembraneCapacitance(double membraneCapacitance) {
-		this.membraneCapacitance = membraneCapacitance;
+		this.membraneCapacitance = membraneCapacitance * 1E9;
 	}
 
 	public double getResetPotential() {
-		return resetPotential;
+		return resetPotential / 1E3;
 	}
 
 	public void setResetPotential(double resetPotential) {
-		this.resetPotential = resetPotential;
+		this.resetPotential = resetPotential * 1E3;
 	}
 
 	public double getRestingPotential() {
-		return restingPotential;
+		return restingPotential / 1E3;
 	}
 
 	public void setRestingPotential(double restingPotential) {
-		this.restingPotential = restingPotential;
+		this.restingPotential = restingPotential * 1E3;
 	}
 
 	public double getThreasholdPotential() {
-		return threasholdPotential;
+		return threasholdPotential / 1E3;
 	}
 
 	public void setThreasholdPotential(double threasholdPotential) {
-		this.threasholdPotential = threasholdPotential;
+		this.threasholdPotential = threasholdPotential * 1E3;
 	}
 
 	public double getNoiseStandardDeviation() {
@@ -165,11 +165,11 @@ public class Integrator {
 	}
 
 	public double getCurrent() {
-		return current;
+		return current / 1E9;
 	}
 
 	public void setCurrent(double current) {
-		this.current = current;
+		this.current = current * 1E9;
 	}
 
 	public double getDeltaT() {
@@ -181,11 +181,11 @@ public class Integrator {
 	}
 
 	public double getPotential() {
-		return potential;
+		return potential / 1E3;
 	}
 
 	public void setPotential(double potential) {
-		this.potential = potential;
+		this.potential = potential * 1E3;
 	}
 
 	public double getTime() {
