@@ -24,5 +24,8 @@ public class App {
 
 		// 6. a)
 		new ExcerciseVisualizer().run();
+
+		// 6. b)
+		new FrequencyCurrentVisualizer().run();
 	}
 }
