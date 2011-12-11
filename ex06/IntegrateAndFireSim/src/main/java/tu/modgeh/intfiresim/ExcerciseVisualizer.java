@@ -182,8 +182,9 @@ public class ExcerciseVisualizer {
 
 		mainFrame.getContentPane().add(canvas);
 
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
+		java.awt.EventQueue.invokeLater(new Runnable() {
+			@Override
+			public void run() {
                 mainFrame.setVisible(true);
             }
         });
