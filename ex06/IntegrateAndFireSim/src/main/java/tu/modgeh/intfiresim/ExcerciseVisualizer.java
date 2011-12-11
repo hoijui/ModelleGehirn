@@ -1,6 +1,7 @@
 package tu.modgeh.intfiresim;
 
 
+import java.awt.Color;
 import java.awt.Shape;
 import java.awt.geom.Path2D;
 import java.util.ArrayList;
@@ -11,7 +12,7 @@ import org.jfree.chart.*;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.plot.XYPlot;
-import org.jfree.chart.renderer.xy.StandardXYItemRenderer;
+import org.jfree.chart.renderer.xy.DefaultXYItemRenderer;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
@@ -52,22 +53,52 @@ public class ExcerciseVisualizer {
 
 	private static XYItemRenderer createRenderer() {
 
-		StandardXYItemRenderer renderer = null;
+		DefaultXYItemRenderer renderer = null;
 
-		renderer = new StandardXYItemRenderer();
+		renderer = new DefaultXYItemRenderer();
 
 		renderer.setDrawSeriesLineAsPath(false);
-		renderer.setPlotLines(false);
 		renderer.setBaseItemLabelsVisible(false);
+		renderer.setBaseLinesVisible(true);
 		renderer.setBaseShapesVisible(true);
 		renderer.setBaseShapesFilled(false);
 
+		renderer.setAutoPopulateSeriesFillPaint(false);
+		renderer.setAutoPopulateSeriesOutlinePaint(false);
+		renderer.setAutoPopulateSeriesOutlineStroke(false);
+		renderer.setAutoPopulateSeriesPaint(false);
+		renderer.setAutoPopulateSeriesShape(false);
+		renderer.setAutoPopulateSeriesStroke(false);
+
 		Shape spikeShape = new SpikeShape();
 		Shape defaultShape = renderer.getBaseShape();
+
+		List<Color> colors = new ArrayList<Color>();
+		colors.add(Color.BLUE);
+		colors.add(Color.RED);
+		colors.add(Color.GREEN);
+
+		// spikes series
 		for (int i = 0; i < 100; i++) {
-			renderer.setSeriesVisible(i, Boolean.TRUE);
-			renderer.setSeriesShape(i, spikeShape);
-			renderer.setLegendShape(i, defaultShape);
+			int series = i * 2;
+			renderer.setSeriesLinesVisible(series, false);
+			renderer.setSeriesVisible(series, true);
+			renderer.setSeriesShape(series, spikeShape);
+			renderer.setLegendShape(series, defaultShape);
+			renderer.setSeriesPaint(series, colors.get(i % colors.size()));
+			renderer.setSeriesFillPaint(series, colors.get(i % colors.size()));
+			renderer.setSeriesOutlinePaint(series, colors.get(i % colors.size()));
+		}
+
+		// membrane potential series
+		for (int i = 0; i < 100; i++) {
+			int series = i * 2 + 1;
+			renderer.setSeriesShapesVisible(series, false);
+			renderer.setSeriesVisible(series, true);
+			renderer.setSeriesVisibleInLegend(series, false);
+			renderer.setSeriesPaint(series, renderer.getSeriesPaint(series - 1));
+			renderer.setSeriesFillPaint(series, renderer.getSeriesFillPaint(series - 1));
+			renderer.setSeriesOutlinePaint(series, renderer.getSeriesOutlinePaint(series - 1));
 		}
 
 		return renderer;
@@ -89,28 +120,29 @@ public class ExcerciseVisualizer {
 		NumberAxis axis = null;
 
 		axis = new NumberAxis();
-		axis.setLowerBound(-0.2);
-		axis.setUpperBound(maxValue);
+		axis.setAutoRange(true);
 
 		return axis;
 	}
 
-	public static ChartPanel createCanvas(List<Integrator> integrators) {
+	public static ChartPanel createCanvas(List<Integrator> integrators, double simulationTime) {
 
 		ChartPanel panel = null;
 
 		XYSeriesCollection dataCollection = new XYSeriesCollection();
 
-		double value = 0.0;
+		double maxValue = 0.0;
 		for (Integrator integrator : integrators) {
-			IntegrationTimeSeriesCreator dataGenerator = new IntegrationTimeSeriesCreator(integrator, value);
-			XYSeries data = dataGenerator.getData();
-			dataCollection.addSeries(data);
-
-			value += 1.0;
+			maxValue = Math.max(maxValue, integrator.getThreasholdPotential());
+			IntegrationTimeSeriesCreator dataGenerator = new IntegrationTimeSeriesCreator(integrator, simulationTime);
+			XYSeries spikes = dataGenerator.getSpikes();
+			spikes.setKey("i: " + integrator.getCurrent() + "A / spike-rate: " + (spikes.getItemCount() / simulationTime));
+			XYSeries membranePotential = dataGenerator.getMembranePotential();
+			dataCollection.addSeries(spikes);
+			dataCollection.addSeries(membranePotential);
 		}
 
-		ValueAxis rangeAxis = createRangeAxis(value);
+		ValueAxis rangeAxis = createRangeAxis(maxValue);
 		ValueAxis domainAxis = createDomainAxis();
 
 		XYPlot plot = new XYPlot(dataCollection, domainAxis, rangeAxis, createRenderer());
@@ -128,40 +160,45 @@ public class ExcerciseVisualizer {
 
 	private static class IntegrationTimeSeriesCreator implements SpikeListener, UpdateListener {
 
-		private XYSeries data = null;
 		private Integrator integrator = null;
-		private double value = 0.0;
+		private XYSeries spikes = null;
+		private XYSeries membranePotential = null;
 
-		private IntegrationTimeSeriesCreator(Integrator integrator, double value) {
+		private IntegrationTimeSeriesCreator(Integrator integrator, double simulationTime) {
 
 			this.integrator = integrator;
-			this.data = new XYSeries(integrator.toString());
-			this.value = value;
+			this.spikes = new XYSeries(integrator.toString() + " - Spikes");
+			this.membranePotential = new XYSeries(integrator.toString() + " - V");
 
 			integrator.addSpikeListener(this);
 			integrator.addUpdateListener(this);
 
-			integrator.runSimulation(1.0);
+			integrator.runSimulation(simulationTime);
 		}
 
-		public XYSeries getData() {
-			return data;
+		public XYSeries getSpikes() {
+			return spikes;
+		}
+
+		public XYSeries getMembranePotential() {
+			return membranePotential;
 		}
 
 		@Override
 		public void spikeGenerated(SpikeEvent evt) {
-			data.add(integrator.getTime(), value);
+			spikes.add(integrator.getTime() - (integrator.getDeltaT() / 2), integrator.getThreasholdPotential());
 		}
 
 		@Override
 		public void stepFinnished(UpdateEvent evt) {
+			membranePotential.add(integrator.getTime(), integrator.getPotential());
 		}
 	}
 
     public void run() {
 
 		final JFrame mainFrame = new JFrame("6.a) Spike-rates on different noise-currents");
-		mainFrame.setSize(900, 500);
+		mainFrame.setSize(800, 600);
 
 		List<Integrator> integrators = new ArrayList<Integrator>();
 
@@ -177,7 +214,7 @@ public class ExcerciseVisualizer {
 		integrator_9nA.setCurrent(0.9E-9);
 		integrators.add(integrator_9nA);
 
-		ChartPanel canvas = createCanvas(integrators);
+		ChartPanel canvas = createCanvas(integrators, 100.0);
 		canvas.setBorder(new EmptyBorder(10, 10, 10, 10));
 
 		mainFrame.getContentPane().add(canvas);
