@@ -20,7 +20,7 @@ public class App {
 			i = Double.parseDouble(args[0]);
 		}
 
-		new Tester(i);
+//		new Tester(i);
 
 		// 6. a)
 		new ExcerciseVisualizer().run();
