@@ -86,7 +86,7 @@ public class Integrator {
 
 	private double calcLeak() {
 
-		return (deltaT / (membraneResistance * membraneResistance))
+		return - (deltaT / (membraneResistance * membraneCapacitance))
 					* (potential - restingPotential);
 	}
 
