@@ -48,6 +48,8 @@ public class Integrator {
 	/** random generator for the noise */
 	private Random rand = new Random();
 
+	private final double EPSILON = 0.00001;
+
 
 	public Integrator() {
 	}
@@ -61,7 +63,10 @@ public class Integrator {
 		while (time < duration) {
 			update();
 			time += deltaT;
-			if ((time % receiveSpikeInterval) < 0.000001) {
+			if (((time % receiveSpikeInterval) < EPSILON)
+					|| (Math.abs((time % receiveSpikeInterval) - receiveSpikeInterval) < EPSILON))
+			{
+				// spike in the next simulation step
 				setReceiveSpike(true);
 			}
 		}
