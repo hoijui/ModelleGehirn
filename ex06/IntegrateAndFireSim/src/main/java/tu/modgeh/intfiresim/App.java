@@ -27,5 +27,8 @@ public class App {
 
 		// 6. b)
 		new FrequencyCurrentVisualizer().run();
+
+		// 6. c)
+		new QualityVisualizer().run();
 	}
 }
