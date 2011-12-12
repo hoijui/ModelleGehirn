@@ -106,7 +106,8 @@ public class Integrator {
 	}
 
 	private double calcNoise() {
-		return Math.sqrt(deltaT) * (noiseStandardDeviation * rand.nextGaussian()) * 1E3;
+		return Math.sqrt(deltaT * 1E3) * (noiseStandardDeviation * rand.nextGaussian());
+	}
 
 	private double calcSpike() {
 		return receiveSpike ? 7 : 0;
