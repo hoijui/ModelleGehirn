@@ -3,17 +3,23 @@ package tu.modgeh.intfiresim;
 import org.jfree.data.xy.XYSeries;
 
 
-public class IntegrationTimeSeriesCreator implements SpikeListener, UpdateListener {
+public class IntegrationTimeSeriesCreator implements Runnable, SpikeListener, UpdateListener {
 
-	private Integrator integrator = null;
+	protected Integrator integrator = null;
 	private XYSeries spikes = null;
 	private XYSeries membranePotential = null;
+	protected double simulationTime = 0.0;
 
 	public IntegrationTimeSeriesCreator(Integrator integrator, double simulationTime) {
 
 		this.integrator = integrator;
 		this.spikes = new XYSeries(integrator.toString() + " - Spikes");
 		this.membranePotential = new XYSeries(integrator.toString() + " - V");
+		this.simulationTime = simulationTime;
+	}
+
+	@Override
+	public void run() {
 
 		integrator.addSpikeListener(this);
 		integrator.addUpdateListener(this);

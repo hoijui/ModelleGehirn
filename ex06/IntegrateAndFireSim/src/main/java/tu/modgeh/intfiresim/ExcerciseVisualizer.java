@@ -135,6 +135,7 @@ public class ExcerciseVisualizer {
 		for (Integrator integrator : integrators) {
 			maxValue = Math.max(maxValue, integrator.getThreasholdPotential());
 			IntegrationTimeSeriesCreator dataGenerator = new IntegrationTimeSeriesCreator(integrator, simulationTime);
+			dataGenerator.run();
 			XYSeries spikes = dataGenerator.getSpikes();
 			spikes.setKey("i: " + integrator.getCurrent() + "A / spike-rate: " + (spikes.getItemCount() / simulationTime));
 			XYSeries membranePotential = dataGenerator.getMembranePotential();
