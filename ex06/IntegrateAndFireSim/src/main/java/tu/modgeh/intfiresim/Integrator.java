@@ -39,6 +39,12 @@ public class Integrator {
 	/** t [s] */
 	private double time = 0.0;
 
+	/** do we receive a spike in the next/current time interval? */
+	private boolean receiveSpike = false;
+
+	/** [s] */
+	private double receiveSpikeInterval = 0.0;
+
 	/** random generator for the noise */
 	private Random rand = new Random();
 
@@ -55,6 +61,9 @@ public class Integrator {
 		while (time < duration) {
 			update();
 			time += deltaT;
+			if ((time % receiveSpikeInterval) < 0.000001) {
+				setReceiveSpike(true);
+			}
 		}
 	}
 
@@ -98,15 +107,19 @@ public class Integrator {
 
 	private double calcNoise() {
 		return Math.sqrt(deltaT) * (noiseStandardDeviation * rand.nextGaussian()) * 1E3;
+
+	private double calcSpike() {
+		return receiveSpike ? 7 : 0;
 	}
 
 	private double calcMembranePotentialChange() {
-		return calcLeak() + calcStored() + calcNoise();
+		return calcLeak() + calcStored() + calcNoise() + calcSpike();
 	}
 
 	private void update() {
 
 		potential += calcMembranePotentialChange();
+		receiveSpike = false;
 
 		if (potential > threasholdPotential) {
 			fireSpike();
@@ -192,6 +205,22 @@ public class Integrator {
 		return time;
 	}
 
+	public void setReceiveSpike(boolean receiveSpike) {
+		this.receiveSpike = receiveSpike;
+	}
+
+	public boolean getReceiveSpike() {
+		return receiveSpike;
+	}
+
+	public void setReceiveSpikeInterval(double receiveSpikeInterval) {
+		this.receiveSpikeInterval = receiveSpikeInterval;
+	}
+
+	public double getReceiveSpikeInterval() {
+		return receiveSpikeInterval;
+	}
+
 	public Random getRand() {
 		return rand;
 	}
@@ -216,6 +245,8 @@ public class Integrator {
 		str.append("deltaT: ").append(getDeltaT()).append("s ");
 //		str.append("V: ").append(getPotential()).append("V ");
 //		str.append("t: ").append(getTime()).append("s ");
+//		str.append("receive-spike?: ").append(getReceiveSpike()).append("s ");
+		str.append("receiveSpikeInterval: ").append(getReceiveSpikeInterval()).append("s ");
 		str.append("}");
 
 		return str.toString();
