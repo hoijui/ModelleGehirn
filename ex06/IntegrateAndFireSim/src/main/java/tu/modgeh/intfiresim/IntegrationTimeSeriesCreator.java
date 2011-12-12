@@ -27,6 +27,10 @@ public class IntegrationTimeSeriesCreator implements Runnable, SpikeListener, Up
 		integrator.runSimulation(simulationTime);
 	}
 
+	public Integrator getIntegrator() {
+		return integrator;
+	}
+
 	public XYSeries getSpikes() {
 		return spikes;
 	}
