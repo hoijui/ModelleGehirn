@@ -51,6 +51,9 @@ public class Integrator {
 	/** random generator for the noise */
 	private Random rand = new Random();
 
+	/** Indicates whether potential is set to resetPotential at the start of next update() */
+	private boolean spiked = false;
+
 	private final double EPSILON = 0.00001;
 
 
@@ -127,12 +130,20 @@ public class Integrator {
 
 	private void update() {
 
+		if (spiked) {
+			// reset after using 0.0 for spike indication
+			potential = resetPotential;
+			spiked = false;
+		}
+
 		potential += calcMembranePotentialChange();
 		receivePulse = false;
 
 		if (potential > threasholdPotential) {
 			fireSpike();
-			potential = resetPotential;
+			// use this for (visual) spike indication
+			potential = 0.0;
+			spiked = true;
 		}
 
 		fireUpdateFinished();
