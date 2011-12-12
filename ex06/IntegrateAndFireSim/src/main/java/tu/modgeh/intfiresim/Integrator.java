@@ -16,7 +16,7 @@ public class Integrator {
 	private double membraneCapacitance = 0.5;
 
 	/** V_reset [mV] */
-	private double resetPotential = -63.0;
+	private double resetPotential = -62.0;
 
 	/** E_r [mV] */
 	private double restingPotential = -70.0;
