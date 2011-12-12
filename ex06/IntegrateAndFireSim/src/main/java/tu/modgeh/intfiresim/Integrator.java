@@ -39,11 +39,14 @@ public class Integrator {
 	/** t [s] */
 	private double time = 0.0;
 
-	/** do we receive a spike in the next/current time interval? */
-	private boolean receiveSpike = false;
+	/** do we receive a pulse in the next/current time interval? */
+	private boolean receivePulse = false;
 
 	/** [s] */
-	private double receiveSpikeInterval = 0.0;
+	private double receivePulseInterval = 0.0;
+
+	/** [mV] */
+	private double receivePulsePotential = 0.0;
 
 	/** random generator for the noise */
 	private Random rand = new Random();
@@ -63,11 +66,11 @@ public class Integrator {
 		while (time < duration) {
 			update();
 			time += deltaT;
-			if (((time % receiveSpikeInterval) < EPSILON)
-					|| (Math.abs((time % receiveSpikeInterval) - receiveSpikeInterval) < EPSILON))
+			if (((time % receivePulseInterval) < EPSILON)
+					|| (Math.abs((time % receivePulseInterval) - receivePulseInterval) < EPSILON))
 			{
 				// spike in the next simulation step
-				setReceiveSpike(true);
+				setReceivePulse(true);
 			}
 		}
 	}
@@ -114,18 +117,18 @@ public class Integrator {
 		return Math.sqrt(deltaT * 1E3) * (noiseStandardDeviation * rand.nextGaussian());
 	}
 
-	private double calcSpike() {
-		return receiveSpike ? 7 : 0;
+	private double calcPulse() {
+		return receivePulse ? receivePulsePotential : 0.0;
 	}
 
 	private double calcMembranePotentialChange() {
-		return calcLeak() + calcStored() + calcNoise() + calcSpike();
+		return calcLeak() + calcStored() + calcNoise() + calcPulse();
 	}
 
 	private void update() {
 
 		potential += calcMembranePotentialChange();
-		receiveSpike = false;
+		receivePulse = false;
 
 		if (potential > threasholdPotential) {
 			fireSpike();
@@ -211,20 +214,28 @@ public class Integrator {
 		return time;
 	}
 
-	public void setReceiveSpike(boolean receiveSpike) {
-		this.receiveSpike = receiveSpike;
+	public void setReceivePulse(boolean receivePulse) {
+		this.receivePulse = receivePulse;
 	}
 
-	public boolean getReceiveSpike() {
-		return receiveSpike;
+	public boolean getReceivePulse() {
+		return receivePulse;
 	}
 
-	public void setReceiveSpikeInterval(double receiveSpikeInterval) {
-		this.receiveSpikeInterval = receiveSpikeInterval;
+	public void setReceivePulseInterval(double receivePulseInterval) {
+		this.receivePulseInterval = receivePulseInterval;
 	}
 
-	public double getReceiveSpikeInterval() {
-		return receiveSpikeInterval;
+	public double getReceivePulseInterval() {
+		return receivePulseInterval;
+	}
+
+	public void setReceivePulsePotential(double receivePulsePotential) {
+		this.receivePulsePotential = receivePulsePotential * 1E3;
+	}
+
+	public double getReceivePulsePotential() {
+		return receivePulsePotential / 1E3;
 	}
 
 	public Random getRand() {
@@ -251,8 +262,9 @@ public class Integrator {
 		str.append("deltaT: ").append(getDeltaT()).append("s ");
 //		str.append("V: ").append(getPotential()).append("V ");
 //		str.append("t: ").append(getTime()).append("s ");
-//		str.append("receive-spike?: ").append(getReceiveSpike()).append("s ");
-		str.append("receiveSpikeInterval: ").append(getReceiveSpikeInterval()).append("s ");
+//		str.append("receive-pulse?: ").append(getReceivePulse()).append("s ");
+		str.append("receivePulseInterval: ").append(getReceivePulseInterval()).append("s ");
+		str.append("receivePulsePotential: ").append(getReceivePulsePotential()).append("V ");
 		str.append("}");
 
 		return str.toString();
