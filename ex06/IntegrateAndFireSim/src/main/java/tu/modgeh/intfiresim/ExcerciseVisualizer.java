@@ -162,7 +162,7 @@ public class ExcerciseVisualizer {
     public void run() {
 
 		final JFrame mainFrame = new JFrame("6.a) Spike-rates on different noise-currents");
-		mainFrame.setSize(800, 600);
+		mainFrame.setSize(800, 500);
 
 		List<Integrator> integrators = new ArrayList<Integrator>();
 

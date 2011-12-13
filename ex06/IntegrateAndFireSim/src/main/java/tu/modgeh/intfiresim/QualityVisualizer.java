@@ -146,7 +146,7 @@ System.out.println(numBestQualities + " best qualities ...");
     public void run() {
 
 		final JFrame mainFrame = new JFrame("6.b) Frequency-Current spike-rates");
-		mainFrame.setSize(800, 600);
+		mainFrame.setSize(800, 500);
 
 		ChartPanel canvas = createCanvas();
 		canvas.setBorder(new EmptyBorder(10, 10, 10, 10));
