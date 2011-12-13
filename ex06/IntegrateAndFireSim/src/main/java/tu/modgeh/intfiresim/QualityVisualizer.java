@@ -28,6 +28,12 @@ public class QualityVisualizer {
 
 		renderer = new DefaultXYItemRenderer();
 
+		renderer.setDrawSeriesLineAsPath(true);
+		renderer.setBaseItemLabelsVisible(true);
+		renderer.setBaseLinesVisible(true);
+		renderer.setBaseShapesVisible(false);
+		renderer.setBaseShapesFilled(false);
+
 		return renderer;
 	}
 
