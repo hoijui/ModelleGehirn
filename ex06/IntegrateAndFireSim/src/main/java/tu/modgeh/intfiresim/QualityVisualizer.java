@@ -151,7 +151,7 @@ System.out.println(numBestQualities + " best qualities ...");
 
     public void run() {
 
-		final JFrame mainFrame = new JFrame("6.b) Frequency-Current spike-rates");
+		final JFrame mainFrame = new JFrame("6.c) Spike detection of small pulses combined with noise (and base current)");
 		mainFrame.setSize(800, 500);
 
 		ChartPanel canvas = createCanvas();
