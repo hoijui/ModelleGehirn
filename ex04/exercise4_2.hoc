@@ -1,0 +1,51 @@
+//
+// TU Berlin
+// Modelle zur Informationsverarbeitung im Gehirn
+// WS11/12
+// Excercise 4
+//
+
+load_file("nrngui.hoc")
+
+
+
+create axonHH
+access axonHH
+
+axonHH {
+	nseg = 20
+	L = 1000
+	v_init = -65
+
+	insert hh
+}
+
+
+objectvar stimHH
+axonHH stimHH = new IClamp(0.0)
+
+stimHH.amp = 100
+stimHH.del = 20
+stimHH.dur = 2
+
+
+objectvar stimHH2
+axonHH stimHH2 = new IClamp(0.0)
+
+stimHH2.amp = 100
+stimHH2.del = 25
+stimHH2.dur = 2
+
+
+
+axonHH.v(1.0)
+
+
+tstop = 50
+
+
+
+init()
+run()
+
+

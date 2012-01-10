@@ -1,0 +1,71 @@
+// Excersie 3.2.c
+
+load_file("nrngui.hoc")
+
+
+nLines = 2
+
+create soma, dendShort[nLines], dendLong[nLines]
+access soma
+
+soma {
+	nseg = 1
+	diam = 18.8
+	L = 18.8
+	Ra = 123.0
+	insert pas
+	g_pas = 0.001
+	e_pas = -65.0
+}
+
+
+for i = 1, nLines-1 dendShort[i] {
+	nseg = 5
+	diam = 2
+	L = 20
+	Ra = 123
+	insert pas
+	g_pas = 0.001
+	e_pas = -65.0
+}
+
+for i = 1, nLines-1 dendLong[i] {
+	nseg = 5
+	diam = 2
+	L = 200
+	Ra = 123
+	insert pas
+	g_pas = 0.001
+	e_pas = -65.0
+}
+
+connect dendShort[0](1), dendLong[0](0)
+connect dendLong[0](1), soma(0)
+
+connect dendLong[1](1), dendShort[1](0)
+connect soma(1), dendLong[1](0)
+
+objectvar syn1
+dendShort[0] syn1 = new AlphaSynapse(0.5)
+syn1.gmax = 0.02
+syn1.tau = 0.1
+syn1.onset = 5
+
+objectvar syn2
+dendShort[1] syn2 = new AlphaSynapse(0.5)
+syn2.gmax = 0.02
+syn2.tau = 0.1
+
+
+syn2.onset = 5 // iterate from 3 to 7, see 3.2.a
+soma.v(0.5)
+
+
+tstop = 30
+
+
+
+init()
+run()
+
+
