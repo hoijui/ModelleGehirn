@@ -5,9 +5,9 @@ package tu.modgeh.spiketrain;
  * Modelle zur Informationsverabeitung im Gehirn
  * WS 11/12
  *
- * Aufgabe: 8. Stochastisches Integrate-and-fire Neuron
- * Ausgabe: 06.12.2011
- * Abgabe:  13.12.2011
+ * Aufgabe: 8. Binary Neuron spike trains
+ * Ausgabe: 03.01.2012
+ * Abgabe:  10.01.2012
  *
  * @author Robin Vobruba (robin.vobruba@campus.tu-berlin.de)
  */
