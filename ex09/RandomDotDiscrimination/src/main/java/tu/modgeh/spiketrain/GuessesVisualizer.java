@@ -89,6 +89,7 @@ public class GuessesVisualizer {
     public void run() {
 
 		final JFrame mainFrame = new JFrame("\"+\" or \"-\" state guesses");
+		mainFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		mainFrame.setSize(800, 500);
 
 		ChartPanel canvas = createCanvas();
