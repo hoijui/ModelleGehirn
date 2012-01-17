@@ -1,1 +1,5 @@
 target/
+*.pdf
+*.aux
+*.log
+*.zip
