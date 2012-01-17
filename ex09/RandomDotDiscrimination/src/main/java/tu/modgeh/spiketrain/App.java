@@ -20,15 +20,15 @@ public class App {
 	public static void main(String[] args) {
 
 //		run91a();
-		run91b();
-//		run91c();
-//		run91d();
+//		run91b();
+		run91c();
+		run91d();
 //		run91e();
 //		run91f();
 	}
 
 	private static void run91a() {
-		
+
 		List<RateGuesser> rateGuessers = new ArrayList<RateGuesser>();
 		for (int d = 0; d <= 10; d++) {
 			RateGenerator rateGenerator = new RateGenerator(d);
@@ -41,7 +41,7 @@ public class App {
 	}
 
 	private static void run91b() {
-		
+
 		List<RateGuesser> rateGuessers = new ArrayList<RateGuesser>();
 		for (int d = 0; d <= 10; d++) {
 			RateGenerator rateGenerator = new RateGenerator(d);
@@ -54,10 +54,11 @@ public class App {
 	}
 
 	private static void run91c() {
-		
+
 		List<RateGuesser> rateGuessers = new ArrayList<RateGuesser>();
 		for (int d = 0; d <= 10; d++) {
 			RateGenerator rateGenerator = new RateGenerator(d);
+			rateGenerator.setRandomTest(false);
 			RateGuesser rateGuesser = new RateGuesser(rateGenerator);
 			rateGenerator.runSimulation();
 			rateGuessers.add(rateGuesser);
@@ -67,7 +68,18 @@ public class App {
 	}
 
 	private static void run91d() {
-		throw new UnsupportedOperationException("Not yet implemented");
+
+		List<RateGuesser> rateGuessers = new ArrayList<RateGuesser>();
+		for (int d = 0; d <= 10; d++) {
+			RateGenerator rateGenerator = new RateGenerator(d);
+			rateGenerator.setRandomTest(false);
+			RateGuesser rateGuesser = new RateGuesser(rateGenerator);
+			rateGenerator.runSimulation();
+			rateGuessers.add(rateGuesser);
+		}
+		GuessesVisualizer guessesVisualizer = new GuessesVisualizer(rateGuessers);
+		guessesVisualizer.setPlotAnalytical(true);
+		guessesVisualizer.run();
 	}
 
 	private static void run91e() {
