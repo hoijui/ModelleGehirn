@@ -19,7 +19,15 @@ public class App {
 
 	public static void main(String[] args) {
 
-		// 9.1.a
+		run91a();
+//		run91b();
+//		run91c();
+//		run91d();
+//		run91e();
+//		run91f();
+	}
+
+	private static void run91a() {
 		List<RateGuesser> rateGuessers = new ArrayList<RateGuesser>();
 		for (int d = 0; d <= 10; d++) {
 			RateGenerator rateGenerator = new RateGenerator(d);
@@ -29,5 +37,25 @@ public class App {
 		}
 		GuessesVisualizer guessesVisualizer = new GuessesVisualizer(rateGuessers);
 		guessesVisualizer.run();
+	}
+
+	private static void run91b() {
+		throw new UnsupportedOperationException("Not yet implemented");
+	}
+
+	private static void run91c() {
+		throw new UnsupportedOperationException("Not yet implemented");
+	}
+
+	private static void run91d() {
+		throw new UnsupportedOperationException("Not yet implemented");
+	}
+
+	private static void run91e() {
+		throw new UnsupportedOperationException("Not yet implemented");
+	}
+
+	private static void run91f() {
+		throw new UnsupportedOperationException("Not yet implemented");
 	}
 }
