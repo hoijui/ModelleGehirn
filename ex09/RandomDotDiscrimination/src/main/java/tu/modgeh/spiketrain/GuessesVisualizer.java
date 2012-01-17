@@ -16,9 +16,20 @@ import org.jfree.data.xy.XYSeriesCollection;
 public class GuessesVisualizer {
 
 	private List<RateGuesser> rateGuessers;
+	private boolean plotAnalytical;
 
 	public GuessesVisualizer(List<RateGuesser> rateGuessers) {
+
 		this.rateGuessers = rateGuessers;
+		this.plotAnalytical = false;
+	}
+
+	public boolean isPlotAnalytical() {
+		return plotAnalytical;
+	}
+
+	public void setPlotAnalytical(boolean plotAnalytical) {
+		this.plotAnalytical = plotAnalytical;
 	}
 
 	private static XYItemRenderer createRenderer() {
@@ -64,11 +75,21 @@ public class GuessesVisualizer {
 
 		final XYSeriesCollection stateGuessesSeriesCol = new XYSeriesCollection();
 
-		XYSeries stateGuessesSeries = new XYSeries("");
+		XYSeries stateGuessesSeries = new XYSeries("simulated");
 		for (RateGuesser rateGuesser : rateGuessers) {
-			stateGuessesSeries.add(rateGuesser.getRateGenerator().getD(), rateGuesser.getCorrectGuessRatio());
+			stateGuessesSeries.add(rateGuesser.getRateGenerator().getD(),
+					rateGuesser.getCorrectGuessRatio());
 		}
 		stateGuessesSeriesCol.addSeries(stateGuessesSeries);
+
+		if (isPlotAnalytical()) {
+			XYSeries stateCalculatedSeries = new XYSeries("analytical");
+			for (RateGuesser rateGuesser : rateGuessers) {
+				stateCalculatedSeries.add(rateGuesser.getRateGenerator().getD(),
+						rateGuesser.getRateGenerator().pCorrect());
+			}
+			stateGuessesSeriesCol.addSeries(stateCalculatedSeries);
+		}
 
 		ValueAxis rangeAxis = createRangeAxis();
 		ValueAxis domainAxis = createDomainAxis();
