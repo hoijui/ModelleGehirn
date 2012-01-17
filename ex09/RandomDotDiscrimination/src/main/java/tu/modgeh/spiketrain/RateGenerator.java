@@ -25,6 +25,8 @@ public class RateGenerator {
 	/** The current fire-rate r [Hz] */
 	private double r;
 
+	private boolean randomTest = true;
+
 	/** number of simulation steps  */
 	private int nSteps = 10000;
 	/**  */
@@ -56,19 +58,66 @@ public class RateGenerator {
 		return discriminability * getSigma() + getMuMinus();
 	}
 
-	private static final double gaussConst1 = Math.sqrt(2 * Math.PI);
-	private double gaussProbability(double mu, double sigma, double x) {
-		return 1 / (sigma * gaussConst1) * Math.exp(- 0.5 * Math.pow((x - mu) / sigma, 2));
+	private static class IntErfcFunction implements Function {
+
+		public IntErfcFunction() {
+		}
+
+		public double calculate(double x) {
+			return Math.exp(- Math.pow(x, 2));
+		}
+	}
+
+	public double pCorrect() {
+
+		return 0.5 * erfc(-d / 2.0);
+	}
+
+	private static final double erfcConst1 = 2.0 / Math.sqrt(Math.PI);
+	private double erfc(double x) {
+
+		final double infinity = 30.0;
+
+		Function intErfcFunction = new IntErfcFunction();
+
+		return erfcConst1 * integral(intErfcFunction, x, infinity);
+	}
+
+	private static class GaussProbabilityFunction implements Function {
+
+		private static final double gaussConst1 = Math.sqrt(2 * Math.PI);
+
+		private double mu;
+		private double sigma;
+
+		public GaussProbabilityFunction(double mu, double sigma) {
+
+			this.mu = mu;
+			this.sigma = sigma;
+		}
+
+		public double calculate(double x) {
+			return 1 / (sigma * gaussConst1) * Math.exp(-0.5 * Math.pow((x - mu) / sigma, 2));
+		}
 	}
 
 	private double gaussIntegralTillInfinity(double mu, double sigma, double from) {
+
+		final double infinity = 30.0;
+
+		Function gaussProbability = new GaussProbabilityFunction(0.0, sigma);
+
+		return integral(gaussProbability, from - mu, infinity);
+	}
+
+	private double integral(Function f, double from, double to) {
 
 		double value = 0.0;
 
 		final double deltaX = 0.01;
 
-		for (double x = from - mu; x < 30.0; x += deltaX) {
-			value += deltaX * gaussProbability(0.0, sigma, x);
+		for (double x = from; x < to; x += deltaX) {
+			value += deltaX * f.calculate(x);
 		}
 
 		return value;
@@ -92,19 +141,44 @@ public class RateGenerator {
 		}
 	}
 
+	private double calcRate(boolean forState) {
+
+		double mu = forState ? getMuPlus() : getMuMinus();
+		return mu + random.nextGaussian() * getSigma();
+	}
+
 	/**
-	 * Start the next simulation step.
-	 * @return the new simulation steps fire-rate r [Hz]
+	 * Calculate the next simulation step.
 	 */
-	private void update() {
+	private void updateRandom() {
 
 		// pick a random new state, "+" or "-"
 		state = random.nextBoolean();
 
-		double mu = state ? getMuPlus() : getMuMinus();
-		r = mu + random.nextGaussian() * getSigma();
+		fireRateChanged(new RateChangedEvent(this, calcRate(state)));
+	}
 
-		fireRateChanged(new RateChangedEvent(this, r));
+	/**
+	 * Calculate the next simulation step.
+	 */
+	private void updateForced() {
+
+		double rateMinus = calcRate(false);
+		double ratePlus = calcRate(true);
+
+		fireForcedRate(new ForcedRateEvent(this, rateMinus, ratePlus));
+	}
+
+	/**
+	 * Calculate the next simulation step.
+	 */
+	private void update() {
+
+		if (isRandomTest()) {
+			updateRandom();
+		} else {
+			updateForced();
+		}
 	}
 
 	public void addRateListener(RateListener listener) {
@@ -115,10 +189,17 @@ public class RateGenerator {
 		rateListeners.remove(listener);
 	}
 
-	protected void fireRateChanged(RateChangedEvent rateChangedEvent) {
+	protected void fireRateChanged(RateChangedEvent evt) {
 
 		for (RateListener rateListener : rateListeners) {
-			rateListener.rateChanged(rateChangedEvent);
+			rateListener.rateChanged(evt);
+		}
+	}
+
+	protected void fireForcedRate(ForcedRateEvent evt) {
+
+		for (RateListener rateListener : rateListeners) {
+			rateListener.forcedRate(evt);
 		}
 	}
 
@@ -159,5 +240,13 @@ public class RateGenerator {
 	 */
 	public int getMuPlus() {
 		return muPlus;
+	}
+
+	public boolean isRandomTest() {
+		return randomTest;
+	}
+
+	public void setRandomTest(boolean randomTest) {
+		this.randomTest = randomTest;
 	}
 }

@@ -75,6 +75,17 @@ public class RateGuesser implements RateListener {
 		}
 	}
 
+	@Override
+	public void forcedRate(ForcedRateEvent evt) {
+
+		boolean correct = (evt.getRateMinus() < evt.getRatePlus());
+		if (correct) {
+			correctGuesses++;
+		} else {
+			incorrectGuesses++;
+		}
+	}
+
 	private boolean guessState(double r) {
 		return (r >= z);
 	}
