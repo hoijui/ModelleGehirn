@@ -56,6 +56,32 @@ public class RateGenerator {
 		return discriminability * getSigma() + getMuMinus();
 	}
 
+	private static final double gaussConst1 = Math.sqrt(2 * Math.PI);
+	private double gaussProbability(double mu, double sigma, double x) {
+		return 1 / (sigma * gaussConst1) * Math.exp(- 0.5 * Math.pow((x - mu) / sigma, 2));
+	}
+
+	private double gaussIntegralTillInfinity(double mu, double sigma, double from) {
+
+		double value = 0.0;
+
+		final double deltaX = 0.01;
+
+		for (double x = from - mu; x < 30.0; x += deltaX) {
+			value += deltaX * gaussProbability(0.0, sigma, x);
+		}
+
+		return value;
+	}
+
+	public double calcAlpha(double z) {
+		return gaussIntegralTillInfinity(muMinus, sigma, z);
+	}
+
+	public double calcBeta(double z) {
+		return gaussIntegralTillInfinity(muPlus, sigma, z);
+	}
+
 	/**
 	 * Runs the whole simulation.
 	 */

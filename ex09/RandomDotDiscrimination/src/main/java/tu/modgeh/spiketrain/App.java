@@ -19,8 +19,8 @@ public class App {
 
 	public static void main(String[] args) {
 
-		run91a();
-//		run91b();
+//		run91a();
+		run91b();
 //		run91c();
 //		run91d();
 //		run91e();
@@ -28,6 +28,7 @@ public class App {
 	}
 
 	private static void run91a() {
+		
 		List<RateGuesser> rateGuessers = new ArrayList<RateGuesser>();
 		for (int d = 0; d <= 10; d++) {
 			RateGenerator rateGenerator = new RateGenerator(d);
@@ -40,11 +41,29 @@ public class App {
 	}
 
 	private static void run91b() {
-		throw new UnsupportedOperationException("Not yet implemented");
+		
+		List<RateGuesser> rateGuessers = new ArrayList<RateGuesser>();
+		for (int d = 0; d <= 10; d++) {
+			RateGenerator rateGenerator = new RateGenerator(d);
+			RateGuesser rateGuesser = new RateGuesser(rateGenerator);
+			rateGenerator.runSimulation();
+			rateGuessers.add(rateGuesser);
+		}
+		RocVisualizer rocVisualizer = new RocVisualizer(rateGuessers);
+		rocVisualizer.run();
 	}
 
 	private static void run91c() {
-		throw new UnsupportedOperationException("Not yet implemented");
+		
+		List<RateGuesser> rateGuessers = new ArrayList<RateGuesser>();
+		for (int d = 0; d <= 10; d++) {
+			RateGenerator rateGenerator = new RateGenerator(d);
+			RateGuesser rateGuesser = new RateGuesser(rateGenerator);
+			rateGenerator.runSimulation();
+			rateGuessers.add(rateGuesser);
+		}
+		GuessesVisualizer guessesVisualizer = new GuessesVisualizer(rateGuessers);
+		guessesVisualizer.run();
 	}
 
 	private static void run91d() {
