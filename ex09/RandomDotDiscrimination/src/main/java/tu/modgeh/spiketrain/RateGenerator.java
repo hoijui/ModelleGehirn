@@ -72,6 +72,9 @@ public class RateGenerator {
 	 */
 	private void update() {
 
+		// pick a random new state, "+" or "-"
+		state = random.nextBoolean();
+
 		double mu = state ? getMuPlus() : getMuMinus();
 		r = mu + random.nextGaussian() * getSigma();
 
