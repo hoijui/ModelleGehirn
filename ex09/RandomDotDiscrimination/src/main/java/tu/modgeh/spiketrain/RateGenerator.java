@@ -74,7 +74,6 @@ public class RateGenerator {
 
 		double mu = state ? getMuPlus() : getMuMinus();
 		r = mu + random.nextGaussian() * getSigma();
-//System.out.println("r: " + r);
 
 		fireRateChanged(new RateChangedEvent(this, r));
 	}
