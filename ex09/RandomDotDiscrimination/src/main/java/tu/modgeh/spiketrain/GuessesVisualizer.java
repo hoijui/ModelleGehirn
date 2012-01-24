@@ -17,11 +17,13 @@ public class GuessesVisualizer {
 
 	private List<RateGuesser> rateGuessers;
 	private boolean plotAnalytical;
+	private boolean plotRocCurveIntegral;
 
 	public GuessesVisualizer(List<RateGuesser> rateGuessers) {
 
 		this.rateGuessers = rateGuessers;
 		this.plotAnalytical = false;
+		this.plotRocCurveIntegral = false;
 	}
 
 	public boolean isPlotAnalytical() {
@@ -30,6 +32,14 @@ public class GuessesVisualizer {
 
 	public void setPlotAnalytical(boolean plotAnalytical) {
 		this.plotAnalytical = plotAnalytical;
+	}
+
+	public boolean isPlotRocCurveIntegral() {
+		return plotRocCurveIntegral;
+	}
+
+	public void setPlotRocCurveIntegral(boolean plotRocCurveIntegral) {
+		this.plotRocCurveIntegral = plotRocCurveIntegral;
 	}
 
 	private static XYItemRenderer createRenderer() {
@@ -89,6 +99,16 @@ public class GuessesVisualizer {
 						rateGuesser.getRateGenerator().pCorrect());
 			}
 			stateGuessesSeriesCol.addSeries(stateCalculatedSeries);
+		}
+
+		if (isPlotRocCurveIntegral()) {
+			XYSeries stateCalculated2Series = new XYSeries("alpha*beta");
+			for (RateGuesser rateGuesser : rateGuessers) {
+System.out.println("isPlotRocCurveIntegral, d=" + rateGuesser.getRateGenerator().getD());
+				stateCalculated2Series.add(rateGuesser.getRateGenerator().getD(),
+						rateGuesser.getRateGenerator().calcPCorrectThroughAlphaBeta());
+			}
+			stateGuessesSeriesCol.addSeries(stateCalculated2Series);
 		}
 
 		ValueAxis rangeAxis = createRangeAxis();

@@ -21,10 +21,9 @@ public class App {
 
 //		run91a();
 //		run91b();
-		run91c();
-		run91d();
-//		run91e();
-//		run91f();
+//		run91c();
+//		run91d();
+		run91e();
 	}
 
 	private static void run91a() {
@@ -83,10 +82,17 @@ public class App {
 	}
 
 	private static void run91e() {
-		throw new UnsupportedOperationException("Not yet implemented");
-	}
 
-	private static void run91f() {
-		throw new UnsupportedOperationException("Not yet implemented");
+		List<RateGuesser> rateGuessers = new ArrayList<RateGuesser>();
+		for (int d = 0; d <= 10; d++) {
+			RateGenerator rateGenerator = new RateGenerator(d);
+			rateGenerator.setRandomTest(false);
+			RateGuesser rateGuesser = new RateGuesser(rateGenerator);
+			rateGenerator.runSimulation();
+			rateGuessers.add(rateGuesser);
+		}
+		GuessesVisualizer guessesVisualizer = new GuessesVisualizer(rateGuessers);
+		guessesVisualizer.setPlotRocCurveIntegral(true);
+		guessesVisualizer.run();
 	}
 }

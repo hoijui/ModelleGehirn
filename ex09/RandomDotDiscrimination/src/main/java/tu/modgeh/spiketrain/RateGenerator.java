@@ -101,9 +101,25 @@ public class RateGenerator {
 		}
 	}
 
+
+	private class RocCurveFunction implements Function {
+
+		public RocCurveFunction() {
+		}
+
+		public double calculate(double z) {
+			return calcAlpha(z) * calcBeta(z);
+		}
+	}
+	public double calcPCorrectThroughAlphaBeta() {
+
+		final double infinity = 3 * sigma;
+		return integral(new RocCurveFunction(), -infinity, infinity);
+	}
+
 	private double gaussIntegralTillInfinity(double mu, double sigma, double from) {
 
-		final double infinity = 30.0;
+		final double infinity = 3 * sigma;
 
 		Function gaussProbability = new GaussProbabilityFunction(0.0, sigma);
 
