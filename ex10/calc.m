@@ -124,13 +124,8 @@ function _u = calc_u(i, j)
 	global u_factors;
 	global gangliaCellsType;
 	global range;
-	_u = 0;
-	for k = -range:range
-		for l = -range:range
-			_u += u_factors(k + range+1, l + range+1) * get_xi(i - k, j - l);
-		endfor
-	endfor
-	_u *= get_isOn(i, j);
+	filterResults = u_factors .* get_xi(i-range:i+range, j-range:j+range);
+	_u = get_isOn(i, j) * sum(filterResults(:));
 	set_u(i, j, _u);
 endfunction
 
@@ -145,7 +140,6 @@ function _V = calc_V()
 	global uRangeY;
 	_V = 0;
 	for i = -uRangeX:uRangeX
-i
 		for j = -uRangeY:uRangeY
 			_V += calc_v(i, j);
 		endfor
