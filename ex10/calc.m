@@ -183,11 +183,26 @@ function _V = calc_V()
 	_V *= 1 / (N_x * N_y);
 endfunction
 
+function _D = calc_D(sigmaX, sigmaY, k, theta)
+	global N_x;
+	global N_y;
+	global uRangeX;
+	global uRangeY;
+	_D = 0;
+	for x = -uRangeX:uRangeX
+		for y = -uRangeY:uRangeY
+			cur_d = (1 / (2*pi*sigmaX*sigmaY)) * exp(-(x^2 / (2*sigmaX^2)) -(y^2 / (2*sigmaY^2))) * cos(k*x - theta) * get_xi(x, y);
+			set_u(x, y, cur_d);
+			_D += cur_d;
+		endfor
+	endfor
+endfunction
 
 exec_10_1_a = true;
 exec_10_1_b = true;
 exec_10_1_c = true;
 exec_10_1_d = false;
+exec_10_2   = true;
 
 
 if exec_10_1_a
@@ -267,3 +282,36 @@ if exec_10_1_d
 	print('orientationSelectivityElongationFactor.png');
 endif
 
+
+if exec_10_2
+	set_N_y(15);
+	b = 5;
+	sigmaX = 10; # elongation in x
+	sigmaY = 10; # elongation in y
+	k = 0.1; # preffered spacial frequency
+
+
+	# corresponds to 10.1.a
+	D = calc_D(sigmaX, sigmaY, k, 0);
+
+	surf(-uRangeY:uRangeY, -uRangeX:uRangeX, gangliaCells);
+	title('Gabor Filter - Receptive Field');
+	xlabel("N_y");
+	ylabel("3*N_x");
+	print('gaborFilter_receptiveField.png');
+
+	# corresponds to 10.1.b
+	thetas = 0 : 10 : 180;
+	Ds = [];
+
+	for theta = thetas
+		set_xi_beam_rotated(theta, b);
+		Ds(end+1) = calc_D(sigmaX, sigmaY, k, theta);
+	endfor
+
+	plot(thetas, Ds);
+	title('Gabor filter');
+	xlabel("theta");
+	ylabel("D(theta)");
+	print('gaborFilter_orientationSelectivity.png');
+endif
