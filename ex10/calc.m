@@ -94,6 +94,28 @@ function set_xi_beam_horiz(i_0, b)
 endfunction
 
 
+function set_xi_beam_rotated(theta, b)
+	global N_x;
+	global N_y;
+	global photoRez;
+	global xiRangeX;
+	global xiRangeY;
+
+	#photoRez = - ones(columns(photoRez), rows(photoRez));
+	photoRez = - ones(rows(photoRez), columns(photoRez));
+
+	limit = (b - 1) / 2;
+	for x = 1 : rows(photoRez)
+		for y = 1 : columns(photoRez)
+			val = y * cos(theta) - x * sin(theta);
+			if val >= -limit && val <= limit
+				photoRez(x, y) = 1;
+			endif
+		endfor
+	endfor
+endfunction
+
+
 
 function _xi = get_xi(i, j)
 	global photoRez;
@@ -164,6 +186,8 @@ endfunction
 
 exec_10_1_a = true;
 exec_10_1_b = true;
+exec_10_1_c = true;
+
 
 if exec_10_1_a
 	set_N_y(15);
@@ -198,8 +222,23 @@ if exec_10_1_b
 endif
 
 
+if exec_10_1_c
+	set_N_y(15);
+	b = 5;
+	thetas = 0 : 10 : 180;
+	Vs = [];
 
+	for theta = thetas
+		set_xi_beam_rotated(theta, b);
+		Vs(end+1) = calc_V();
+	endfor
 
+	plot(thetas, Vs);
+	title('Orientation selectivity');
+	xlabel("theta");
+	ylabel("V(theta)");
+	print('orientationSelectivity.png');
+endif
 
 
 
