@@ -80,6 +80,20 @@ function initMatrices()
 endfunction
 
 
+function set_xi_beam_horiz(i_0, b)
+	global N_x;
+	global N_y;
+	global photoRez;
+	global xiRangeX;
+	global xiRangeY;
+
+	#photoRez = ones(columns(photoRez), rows(photoRez));
+	#photoRez(i_0:i_0+b-1, :) = - ones(b, rows(photoRez));
+	photoRez = ones(columns(photoRez), rows(photoRez));
+	photoRez(:, i_0:i_0+b-1) = - ones(columns(photoRez), b);
+endfunction
+
+
 
 function _xi = get_xi(i, j)
 	global photoRez;
@@ -149,6 +163,7 @@ endfunction
 
 
 exec_10_1_a = true;
+exec_10_1_b = true;
 
 if exec_10_1_a
 	set_N_y(15);
@@ -160,6 +175,26 @@ if exec_10_1_a
 	xlabel("N_y");
 	ylabel("3*N_x");
 	print('receptiveField.png');
+endif
+
+
+if exec_10_1_b
+	set_N_y(15);
+	b = 5;
+	i_0s = 1 : rows(photoRez) - b;
+	Vs = [];
+
+
+	for i_0 = i_0s
+		set_xi_beam_horiz(i_0, b);
+		Vs(end+1) = calc_V();
+	endfor
+
+	plot(i_0s, Vs);
+	title('Phase sensitivity');
+	xlabel("i_0");
+	ylabel("V(i_0)");
+	print('phaseSensitivity.png');
 endif
 
 
