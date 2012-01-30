@@ -187,6 +187,7 @@ endfunction
 exec_10_1_a = true;
 exec_10_1_b = true;
 exec_10_1_c = true;
+exec_10_1_d = false;
 
 
 if exec_10_1_a
@@ -241,5 +242,28 @@ if exec_10_1_c
 endif
 
 
+if exec_10_1_d
+	b = 5;
+	thetas = 0 : 10 : 180;
+	N_ys = [11, 21, 25, 31];
 
+	Vss = [];
+	legendV = strcat("L=", num2str(N_ys.'));
+	for myNy = N_ys
+		set_N_y(myNy);
+		Vs = [];
+		for theta = thetas
+			set_xi_beam_rotated(theta, b);
+			Vs(end+1) = calc_V();
+		endfor
+		Vss(end+1, :) = Vs;
+	endfor
+
+	plot(thetas, Vss);
+	legend(legendV);
+	title('Orientation selectivity in relation to the elongation factor');
+	xlabel("theta");
+	ylabel("V(theta)");
+	print('orientationSelectivityElongationFactor.png');
+endif
 
