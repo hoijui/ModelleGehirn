@@ -148,23 +148,24 @@ function _V = calc_V()
 endfunction
 
 
+exec_10_1_a = true;
+
+if exec_10_1_a
+	set_N_y(15);
+
+	calc_V();
+
+	surf(-uRangeY:uRangeY, -uRangeX:uRangeX, gangliaCells);
+	title('Receptive Field');
+	xlabel("N_y");
+	ylabel("3*N_x");
+	print('receptiveField.png');
+endif
 
 
-# 10.1. a)
-
-set_N_y(15);
-
-calc_V()
-
-surf(-uRangeY:uRangeY, -uRangeX:uRangeX, gangliaCells);
-title('Receptive Field');
-xlabel("N_y");
-ylabel("3*N_x");
-print('receptiveField.png');
 
 
 
-# 10.1. b)
 
 
 
