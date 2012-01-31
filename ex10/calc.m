@@ -202,7 +202,7 @@ endfunction
 exec_10_1_a = true;
 exec_10_1_b = true;
 exec_10_1_c = true;
-exec_10_1_d = false;
+exec_10_1_d = true;
 exec_10_2   = true;
 
 
