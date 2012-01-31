@@ -198,6 +198,7 @@ function _D = calc_D(sigmaX, sigmaY, k, theta)
 	endfor
 endfunction
 
+
 exec_10_1_a = true;
 exec_10_1_b = true;
 exec_10_1_c = true;
@@ -300,7 +301,26 @@ if exec_10_2
 	ylabel("3*N_x");
 	print('gaborFilter_receptiveField.png');
 
+
 	# corresponds to 10.1.b
+	set_N_y(15);
+	i_0s = 1 : rows(photoRez) - b;
+	Ds = [];
+
+	for i_0 = i_0s
+		theta = 0;
+		set_xi_beam_horiz(i_0, b);
+		Ds(end+1) = calc_D(sigmaX, sigmaY, k, theta);
+	endfor
+
+	plot(i_0s, Ds);
+	title('Gabor Filter - Phase sensitivity');
+	xlabel("i_0");
+	ylabel("D(i_0)");
+	print('gaborFilter_phaseSensitivity.png');
+
+
+	# corresponds to 10.1.c
 	thetas = 0 : 10 : 180;
 	Ds = [];
 
@@ -310,7 +330,7 @@ if exec_10_2
 	endfor
 
 	plot(thetas, Ds);
-	title('Gabor filter');
+	title('Gabor filter - Orientation selectivity');
 	xlabel("theta");
 	ylabel("D(theta)");
 	print('gaborFilter_orientationSelectivity.png');
