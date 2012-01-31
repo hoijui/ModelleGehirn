@@ -287,9 +287,9 @@ endif
 if exec_10_2
 	set_N_y(15);
 	b = 5;
-	sigmaX = 10; # elongation in x
-	sigmaY = 10; # elongation in y
-	k = 0.1; # preffered spacial frequency
+	sigmaX = 7; # elongation in x
+	sigmaY = 300; # elongation in y
+	k = 0.8; # preffered spacial frequency
 
 
 	# corresponds to 10.1.a
