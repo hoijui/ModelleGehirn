@@ -122,31 +122,40 @@ function update_W()
 	w = w + eta * (s*v - 0.1*w2*w);
 endfunction
 
-function plot_W(filePostfix, description)
-	global w;
-	global v_a;
-
-	surf(-v_a:v_a, -v_a:v_a, w);
-	title(cstrcat('Weights ', description));
-	print(cstrcat('weights_', filePostfix, '.png'));
-endfunction
-
 function train(myR, myEta, myFileDef, myDesc)
 	global eta;
+	global w;
+	global v_a;
 	eta = myEta;
 	set_R(myR);
 	init_W();
+
+	myPlt = surf(-v_a:v_a, -v_a:v_a, w);
+	set(myPlt, "zdatasource", "w");
+	pltTitle = 'Weights';
+	title(pltTitle);
+	axis([-v_a, v_a, -v_a, v_a, -10, 10]);
+	print();
 
 	n = 500;
 	for tr = 1:n+1
 		if mod(tr, 100) == 0 || tr == 1 || tr == n+1
 			filePostfix = cstrcat(myFileDef, '_', num2str(tr));
-			desc = cstrcat('interm (iter: ', num2str(tr - 1), ', R: ', num2str(myR), ', eta: ', num2str(eta), ') ', myDesc);
-			plot_W(filePostfix, desc);
+			pltTitle = cstrcat('Weights (iter: ', num2str(tr - 1), ', R: ', num2str(myR), ', eta: ', num2str(eta), ') ', myDesc);
+			title(pltTitle);
+			pause(0.001);
+			refreshdata(gcf(), "caller");
+			print(cstrcat('weights_', filePostfix, '.png'));
 		endif
 		tr
 		set_xi_random();
 		update_W();
+		if mod(tr, 5) == 0
+			pltTitle = cstrcat('Weights (iter: ', num2str(tr), ', R: ', num2str(myR), ', eta: ', num2str(eta), ') ', myDesc);
+			title(pltTitle);
+			pause(0.001);
+			refreshdata(gcf(), "caller");
+		endif
 	endfor
 endfunction
 
