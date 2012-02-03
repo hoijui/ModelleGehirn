@@ -137,10 +137,10 @@ function train(myR, myEta, myFileDef, myDesc)
 	axis([-v_a, v_a, -v_a, v_a, -10, 10]);
 	print();
 
-	n = 500;
+	n = 2000;
 	for tr = 1:n+1
-		if mod(tr, 100) == 0 || tr == 1 || tr == n+1
-			filePostfix = cstrcat(myFileDef, '_', num2str(tr));
+		if mod(tr, 100) == 0 || tr == 1
+			filePostfix = cstrcat(myFileDef, '_', sprintf("%06i", tr - 1));
 			pltTitle = cstrcat('Weights (iter: ', num2str(tr - 1), ', R: ', num2str(myR), ', eta: ', num2str(eta), ') ', myDesc);
 			title(pltTitle);
 			pause(0.001);
@@ -163,10 +163,10 @@ exec_11_1_b = true;
 exec_11_1_c = true;
 
 if exec_11_1_b
-	train(1.7, 0.001, 'b', '(11.1.b)');
+	train(1.7, 0.0003, 'b', '(11.1.b)');
 endif
 
 if exec_11_1_c
-	train(1.2, 0.001, 'c', '(11.1.c)');
+	train(1.2, 0.0003, 'c', '(11.1.c)');
 endif
 
